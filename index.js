@@ -23,3 +23,11 @@ svg
   .attr('y1', 20)
   .attr('y2', 120)
   .attr('stroke', 'red');
+svg
+  .append('text')
+  .attr('x', 20)
+  .attr('y', 200)
+  .attr('fill', 'gray')
+  .text('Hello, ninjas!')
+  // .attr('style', 'font-family: arial;')
+  .style('font-family', 'arial')
