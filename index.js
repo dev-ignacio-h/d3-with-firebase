@@ -1,35 +1,17 @@
-const canvas = d3.select('.canvas');
+const data = [
+  {width: 200, height: 100, fill: 'red'}
+]
 
-const svg = canvas.append('svg').attr('height', 600).attr('width', 600);
+const svg = d3.select('svg')
 
-const groups = svg.append('g').attr('transform', 'translate(50, 100)');
-
-// append shapes to svg container
-groups
-  .append('rect')
-  .attr('width', 200)
-  .attr('height', 100)
-  .attr('fill', 'blue')
-  .attr('x', 20)
-  .attr('y', 20);
-groups
-  .append('circle')
-  .attr('r', 50)
-  .attr('cx', 300)
-  .attr('cy', 70)
-  .attr('fill', 'pink');
-groups
-  .append('line')
-  .attr('x1', 370)
-  .attr('x2', 400)
-  .attr('y1', 20)
-  .attr('y2', 120)
-  .attr('stroke', 'red');
-svg
-  .append('text')
-  .attr('x', 20)
-  .attr('y', 200)
-  .attr('fill', 'gray')
-  .text('Hello, ninjas!')
-  // .attr('style', 'font-family: arial;')
-  .style('font-family', 'arial');
+const rect = svg.select('rect')
+  .data(data)
+  .attr('width', (d, i, n)=> {
+    console.log('data', data);
+    console.log('d', d);
+    console.log('i', i);
+    console.log('n', n);
+    return d.width
+  })
+  .attr('height', d => d.height)
+  .attr('fill', d => d.fill)
