@@ -21,14 +21,12 @@ const xAxisGroup = graph
   .append('g')
   .attr('transform', `translate(0, ${graphHeight})`);
 
-d3.json('menu.json').then((data) => {
-  // const min = d3.min(data.map(item => item.orders))
-  // const max = d3.max(data.map(item => item.orders))
-  // const extent = d3.extent(data.map(item => item.orders))
-  const min = d3.min(data, (d) => d.orders);
-  const max = d3.max(data, (d) => d.orders);
-  const extent = d3.extent(data, (d) => d.orders);
+db.collection('dishes').get().then((res) => {
+  // console.log(res);
+  const data = res.docs.map(doc => doc.data())
 
+  // console.log(data);
+  const max = d3.max(data, (d) => d.orders);
   const y = d3.scaleLinear().domain([0, max]).range([graphHeight, 0]);
 
   const x = d3
