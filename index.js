@@ -2,8 +2,8 @@
 const svg = d3
   .select('.canvas')
   .append('svg')
-  .attr('width', 600)
-  .attr('height', 600);
+    .attr('width', 600)
+    .attr('height', 600);
 
 // create margins and dimensions
 const margin = { top: 20, right: 20, bottom: 100, left: 100 };
@@ -12,24 +12,27 @@ const graphHeight = 600 - margin.top - margin.bottom;
 
 const graph = svg
   .append('g')
-  .attr('width', graphWidth)
-  .attr('height', graphHeight)
-  .attr('transform', `translate(${margin.left}, ${margin.top})`);
+    .attr('width', graphWidth)
+    .attr('height', graphHeight)
+    .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+const yAxisGroup = graph.append('g')
+const xAxisGroup = graph.append('g')
+  .attr('transform', `translate(0, ${graphHeight})`)
 
 d3.json('menu.json').then((data) => {
-  const min = d3.min(data, (d) => d.orders);
-  const max = d3.max(data, (d) => d.orders);
-  const extent = d3.extent(data, (d) => d.orders);
-
-  const y = d3.scaleLinear().domain([0, max]).range([0, 500]);
 
   // const min = d3.min(data.map(item => item.orders))
   // const max = d3.max(data.map(item => item.orders))
   // const extent = d3.extent(data.map(item => item.orders))
+  const min = d3.min(data, (d) => d.orders);
+  const max = d3.max(data, (d) => d.orders);
+  const extent = d3.extent(data, (d) => d.orders);
 
-  console.log(min);
-  console.log(max);
-  console.log(extent);
+  const y = d3
+    .scaleLinear()
+    .domain([0, max])
+    .range([0, graphHeight]);
 
   const x = d3
     .scaleBand()
@@ -51,8 +54,15 @@ d3.json('menu.json').then((data) => {
   rects
     .enter()
     .append('rect')
-    .attr('width', x.bandwidth)
-    .attr('height', (d) => y(d.orders))
-    .attr('fill', 'orange')
-    .attr('x', (d) => x(d.name));
+      .attr('width', x.bandwidth)
+      .attr('height', (d) => y(d.orders))
+      .attr('fill', 'orange')
+      .attr('x', (d) => x(d.name));
+
+  // create and call the axes
+  const xAxis = d3.axisBottom(x);
+  const yAxis = d3.axisLeft(y);
+
+  xAxisGroup.call(xAxis);
+  yAxisGroup.call(yAxis);
 });
