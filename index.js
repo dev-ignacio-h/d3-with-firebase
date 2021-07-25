@@ -2,8 +2,8 @@
 const svg = d3
   .select('.canvas')
   .append('svg')
-    .attr('width', 600)
-    .attr('height', 600);
+  .attr('width', 600)
+  .attr('height', 600);
 
 // create margins and dimensions
 const margin = { top: 20, right: 20, bottom: 100, left: 100 };
@@ -12,16 +12,16 @@ const graphHeight = 600 - margin.top - margin.bottom;
 
 const graph = svg
   .append('g')
-    .attr('width', graphWidth)
-    .attr('height', graphHeight)
-    .attr('transform', `translate(${margin.left}, ${margin.top})`);
+  .attr('width', graphWidth)
+  .attr('height', graphHeight)
+  .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-const yAxisGroup = graph.append('g')
-const xAxisGroup = graph.append('g')
-  .attr('transform', `translate(0, ${graphHeight})`)
+const yAxisGroup = graph.append('g');
+const xAxisGroup = graph
+  .append('g')
+  .attr('transform', `translate(0, ${graphHeight})`);
 
 d3.json('menu.json').then((data) => {
-
   // const min = d3.min(data.map(item => item.orders))
   // const max = d3.max(data.map(item => item.orders))
   // const extent = d3.extent(data.map(item => item.orders))
@@ -29,10 +29,7 @@ d3.json('menu.json').then((data) => {
   const max = d3.max(data, (d) => d.orders);
   const extent = d3.extent(data, (d) => d.orders);
 
-  const y = d3
-    .scaleLinear()
-    .domain([0, max])
-    .range([graphHeight, 0]);
+  const y = d3.scaleLinear().domain([0, max]).range([graphHeight, 0]);
 
   const x = d3
     .scaleBand()
@@ -49,21 +46,33 @@ d3.json('menu.json').then((data) => {
     .attr('height', (d) => graphHeight - y(d.orders))
     .attr('fill', 'orange')
     .attr('x', (d) => x(d.name))
-    .attr('y', (d) => y(d.orders))
+    .attr('y', (d) => y(d.orders));
 
   // append the enter selection to the DOM
   rects
     .enter()
     .append('rect')
-      .attr('width', x.bandwidth)
-      .attr('height', (d) => graphHeight - y(d.orders))
-      .attr('fill', 'orange')
-      .attr('x', (d) => x(d.name))
-      .attr('y', (d) => y(d.orders))
+    .attr('width', x.bandwidth)
+    .attr('height', (d) => graphHeight - y(d.orders))
+    .attr('fill', 'orange')
+    .attr('x', (d) => x(d.name))
+    .attr('y', (d) => y(d.orders));
   // create and call the axes
   const xAxis = d3.axisBottom(x);
-  const yAxis = d3.axisLeft(y);
+  const yAxis = d3
+    .axisLeft(y)
+    .ticks(4)
+    .tickFormat((d) => d + ' orders');
 
   xAxisGroup.call(xAxis);
   yAxisGroup.call(yAxis);
+
+  yAxisGroup
+    .selectAll('text')
+    .attr('fill', 'peru')
+  xAxisGroup
+    .selectAll('text')
+    .attr('transform', 'rotate(-40)')
+    .attr('text-anchor', 'end')
+    .attr('fill', 'peru');
 });
